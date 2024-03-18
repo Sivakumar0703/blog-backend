@@ -1,6 +1,7 @@
-
-
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+const secretKey = process.env.JWT_ACCESS_SECRET_KEY;
+const refreshTokenKey = process.env.JWT_REFRESH_SECRET_KEY;
 
 
 
@@ -16,6 +17,25 @@ export const hashPassword = async(password) => {
 // compare password
 export const hashCompare = async(password,hashedPassword) => {
     return await bcrypt.compare(password,hashedPassword)
+}
+
+export const createToken = async(payload) => {
+    try {
+        const token = jwt.sign(payload,secretKey);
+    return token
+    } catch (error) {
+       console.log('error in token generation',error) 
+    }
+}
+
+// verify token
+export const verifyToken = async(token) => {
+    try {
+        const decode = jwt.verify(token , secretKey);
+        return decode._id
+    } catch (error) {
+        console.log('error in token verification',error)
+    }
 }
 
 

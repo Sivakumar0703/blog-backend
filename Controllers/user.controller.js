@@ -1,5 +1,5 @@
 import User from "../Models/user.model.js";
-import { hashCompare, hashPassword } from "./authorization.controller.js";
+import { createToken, hashCompare, hashPassword } from "./authorization.controller.js";
 import TokenModel from "../Models/token.model.js";
 import jwt from "jsonwebtoken";
 // import dotenv from "dotenv";
@@ -27,6 +27,41 @@ export const register = async(req,res) => {
     }
 }
 
+// export const login = async(req,res) => {
+//     const {email , password} = req.body;
+//     try {
+//        const user = await User.findOne({email:email});
+//        if(user === null){
+//         return res.status(400).json({message:"incorrect email id"});
+//        } 
+//        console.log(user)
+//        const isPasswordMatched = await hashCompare(password,user.password);
+//        if(!isPasswordMatched){
+//         return res.status(400).json({message:"incorrect password"});
+//        }
+//        console.log("password",secretKey)
+//        const payload = {
+//         name : user.name,
+//         email: user.email,
+//        }
+//        const accessToken =  jwt.sign(payload,secretKey,{expiresIn:"900000"}); // 15 minutes
+//        const refreshToken = jwt.sign(payload,refreshTokenKey);
+//        console.log(accessToken , refreshToken)
+//        const newToken = await new TokenModel({token:refreshToken});
+//        await newToken.save();
+//        const token = {
+//         name:user.userName,
+//         email:user.email,
+//         accessToken:accessToken,
+//         refreshToken:refreshToken
+//        }
+//        console.log(token)
+//        res.status(200).json({message:"login successful",token:token});
+//     } catch (error) {
+//         res.status(500).json({message:"internal server error",error})
+//     }
+// }
+
 export const login = async(req,res) => {
     const {email , password} = req.body;
     try {
@@ -41,22 +76,14 @@ export const login = async(req,res) => {
        }
        console.log("password",secretKey)
        const payload = {
-        name : user.name,
+        name : user.userName,
         email: user.email,
+        id: user._id
        }
-       const accessToken =  jwt.sign(payload,secretKey,{expiresIn:"900000"}); // 15 minutes
-       const refreshToken = jwt.sign(payload,refreshTokenKey);
-       console.log(accessToken , refreshToken)
-       const newToken = await new TokenModel({token:refreshToken});
-       await newToken.save();
-       const token = {
-        name:user.userName,
-        email:user.email,
-        accessToken:accessToken,
-        refreshToken:refreshToken
-       }
-       console.log(token)
-       res.status(200).json({message:"login successful",token:token});
+       const token = await createToken(payload);
+       user.token = token;
+       user.save()
+       res.status(200).json({message:"login successful",token:token,user:payload});
     } catch (error) {
         res.status(500).json({message:"internal server error",error})
     }
