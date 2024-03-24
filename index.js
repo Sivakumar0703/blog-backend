@@ -13,14 +13,11 @@ import feedbackRouter from "./Routers/feeback.router.js";
 const app = express();
 const port = process.env.PORT;
 
-const corsOptions = {
-    origin:process.env.URL,
-    credentials: true,
-    optionSuccessStatus: 200,
-  };
+console.log(process.env.URL)
+
 
 // middleware
-app.use(cors(corsOptions));
+app.use(cors({origin:process.env.URL}));
 app.use(express.json());
 app.use(express.static("public"));
 app.use("/api/user",userRouter);
