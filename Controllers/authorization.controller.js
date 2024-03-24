@@ -1,10 +1,6 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 const secretKey = process.env.JWT_ACCESS_SECRET_KEY;
-const refreshTokenKey = process.env.JWT_REFRESH_SECRET_KEY;
-
-
-
 
 
 // hash password

@@ -29,8 +29,17 @@ export const getPostById = async(req,res) => {
     }
 }
 
+export const getUserPosts = async(req,res) => {
+    const {user} = req;
+    try {
+        const posts = await Post.find({email:user.email});
+        res.status(200).json({message:"post found" , posts:posts});
+    } catch (error) {
+        res.status(500).json({message:"internal server error"}); 
+    }
+}
+
 export const createPost = async(req,res) => {
-    // const{author,email,image,title,description,category} = req.body;
     try {
         const newPost = await Post.create(req.body);
         newPost.save();
@@ -43,7 +52,6 @@ export const createPost = async(req,res) => {
 export const updatePost = async(req,res) => {
     const{id , previousImage} = req.params;
     const{imageHasChanged} = req.body;
-    console.log(__dirname , __dirname.split("\\Controllers")[0])
     try {
         if(!id){
             return  res.status(400).json({message:"id missing"}); 
@@ -51,7 +59,6 @@ export const updatePost = async(req,res) => {
 
         // deleting previous image
         if(imageHasChanged && previousImage){
-            console.log('old-image' , previousImage , __dirname.split("\\Controllers")[0] )
             fs.unlink(`${__dirname.split("\\Controllers")[0]}/public/blog-images/${previousImage}` , (error) => {
                 if(error){
                     console.log("error in image deletion",error)

@@ -5,6 +5,8 @@ import ConnectDb from "./Database/ConfigDb.js";
 import userRouter from "./Routers/user.router.js";
 import imageRouter from "./Routers/image.router.js";
 import postRouter from "./Routers/post.router.js";
+import commentRouter from "./Routers/comment.router.js";
+import feedbackRouter from "./Routers/feeback.router.js";
 
 
 
@@ -18,6 +20,8 @@ app.use(express.static("public"));
 app.use("/api/user",userRouter);
 app.use("/api/upload",imageRouter);
 app.use("/api/post",postRouter);
+app.use("/api/comment",commentRouter);
+app.use("/api/feedback",feedbackRouter);
 ConnectDb();
 
 
