@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const dbConnectionString = process.env.MONGO_CONNECTION_URL;
+const dbConnectionString = `mongodb+srv://${process.env.MONGO_USER_NAME}:${process.env.MONGO_PASSWORD}@cluster0.kyumxs1.mongodb.net/`;
 
 const ConnectDb = async() => {
     try {
